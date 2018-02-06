@@ -1,8 +1,10 @@
 package com.yazuo.xiaoya.plugins.annotation.swagger.action;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
 import com.yazuo.xiaoya.plugins.entity.FileClass;
 import com.yazuo.xiaoya.plugins.annotation.AnnotationHandler;
@@ -20,11 +22,12 @@ public class GenerateSwaggerModelAction extends AnAction {
         PsiFile psiFile = anActionEvent.getData(DataKeys.PSI_FILE);
         Project project = CommonDataKeys.PROJECT.getData(dataContext);
         FileClass fileClass = new FileClass((PsiJavaFile) psiFile,project);
+        int state = Messages.showYesNoDialog(project,"是否为@ApiParam","Model","是","否", AllIcons.FileTypes.Any_type);
         new WriteCommandAction.Simple(project,psiFile){
             @Override
             protected void run() throws Throwable {
                     fileClass.process(clazz->{
-                        AnnotationHandler handler = AnnotationUtil.isRestController(clazz.getPsiClass())?new ApiHandler(project,clazz): new ApiModelHandler(project,clazz);
+                        AnnotationHandler handler = AnnotationUtil.isRestController(clazz.getPsiClass())?new ApiHandler(project,clazz): new ApiModelHandler(project,clazz,state);
                         handler.addClassAnnotation();
                         handler.addFieldAnnotation();
                         handler.addMethodAnnotation();

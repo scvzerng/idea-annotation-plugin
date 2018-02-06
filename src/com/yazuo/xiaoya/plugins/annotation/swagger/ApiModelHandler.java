@@ -20,8 +20,11 @@ import static com.yazuo.xiaoya.plugins.constanst.Constants.SWAGGER_PREFIX;
 public class ApiModelHandler extends SwaggerAnnotationHandler {
     public static final String MODEL = "ApiModel";
     public static final String MODEL_PROPERTY = "ApiModelProperty";
-    public ApiModelHandler(Project project,Class clazz) {
+    public static final String MODEL_PARAM = "ApiParam";
+    private int param;
+    public ApiModelHandler(Project project,Class clazz,int param) {
         super(project,clazz);
+        this.param = param;
     }
 
     @Override
@@ -34,8 +37,14 @@ public class ApiModelHandler extends SwaggerAnnotationHandler {
         this.clazz.getFields().stream().filter(this::isNotExist).map(Field::getDocument).forEach(doc->{
             String annotationText = doc.getDescriptionText().trim();
             Map<String,String> params = new HashMap<>();
-            params.put("notes",annotationText);
-            PsiAnnotation annotation = elementFactory.createAnnotationFromText(AnnotationUtil.createAnnotationText(MODEL_PROPERTY,params),clazz.getPsiClass());
+            if(param>0){
+                params.put("notes",annotationText);
+
+            }else{
+                params.put("value",annotationText);
+
+            }
+            PsiAnnotation annotation = elementFactory.createAnnotationFromText(AnnotationUtil.createAnnotationText(param>0?MODEL_PARAM:MODEL_PROPERTY,params),clazz.getPsiClass());
             doc.addAnnotation(annotation);
         });
     }
