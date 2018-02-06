@@ -23,8 +23,8 @@ public class ApiOperation {
         this.httpMethod =annotationText.substring(1,annotationText.indexOf("Mapping")).toUpperCase();
         String text = method.getMethod().getReturnType().getPresentableText();
         this.response = text.contains("<")?method.getDocument().getReturnTag().get().getValue():text;
-        this.notes = method.getDocument().firstLine();
-        this.value = method.getDocument().firstLine();
+        this.notes = method.getDocument().firstLine().trim();
+        this.value = method.getDocument().firstLine().trim();
     }
 
 

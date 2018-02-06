@@ -32,7 +32,7 @@ public class ApiModelHandler extends SwaggerAnnotationHandler {
     @Override
     public void addFieldAnnotation() {
         this.clazz.getFields().stream().filter(this::isNotExist).map(Field::getDocument).forEach(doc->{
-            String annotationText = doc.getDescriptionText();
+            String annotationText = doc.getDescriptionText().trim();
             Map<String,String> params = new HashMap<>();
             params.put("notes",annotationText);
             PsiAnnotation annotation = elementFactory.createAnnotationFromText(AnnotationUtil.createAnnotationText(MODEL_PROPERTY,params),clazz.getPsiClass());
@@ -53,7 +53,7 @@ public class ApiModelHandler extends SwaggerAnnotationHandler {
     }
 
     private String getAnnotationText(Class clazz){
-        return clazz.getDocument().firstLine();
+        return clazz.getDocument().firstLine().trim();
     }
     private boolean isNotExist(Field field){
         return field.getField().getModifierList().findAnnotation(Constants.SWAGGER_PREFIX+"."+MODEL_PROPERTY)==null;
